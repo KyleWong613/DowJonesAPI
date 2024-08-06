@@ -1,0 +1,13 @@
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\obj\Debug\MQ_Stress.csproj.AssemblyReference.cache
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\obj\Debug\MQ_Stress.csproj.CoreCompileInputs.cache
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\MQ_Stress.exe.config
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\MQ_Stress.exe
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\MQ_Stress.pdb
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\CRM_API.dll
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\CRM_MQ_Helper.dll
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\System.Data.SqlClient.dll
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\amqmdnet.dll
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\bin\Debug\System.Data.SqlClient.xml
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\obj\Debug\MQ_Stress.csproj.CopyComplete
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\obj\Debug\MQ_Stress.exe
+C:\Users\A230646\source\repos\MQ_Stress\MQ_Stress\obj\Debug\MQ_Stress.pdb
