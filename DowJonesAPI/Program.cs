@@ -36,9 +36,11 @@ class Program
         string sftpUsername = configuration["SFTP:Username"];
         string sftpPassword = configuration["SFTP:Password"] ?? "";  // Default password empty
         int sftpPort = int.Parse(configuration["SFTP:Port"]);
-         
+        string s3Path = configuration["SFTP:PEMFilePath"];
+
+
         // Instantiate and run the job immediately for test
-        var downloadFileJob = new DownloadFileJob(username, password, proxyUsername, proxyPassword, proxyHost, proxyPort, sftpHost, sftpUsername, sftpPassword, sftpPort);
+        var downloadFileJob = new DownloadFileJob(username, password, proxyUsername, proxyPassword, proxyHost, proxyPort, sftpHost, sftpUsername, sftpPassword, sftpPort, s3Path);
         await downloadFileJob.Execute(null);  // Pass null for the job context (not needed for this case)
 
 
@@ -82,8 +84,10 @@ public class DownloadFileJob : IJob
     private readonly string _sftpHost;
     private readonly string _sftpUsername;
     private readonly string? _sftpPassword;
-    private readonly int _sftpPort;
-    public DownloadFileJob(string username, string password, string proxyUsername, string proxyPassword, string proxyHost, int proxyPort, string sftpHost, string sftpUsername, string sftpPassword, int sftpPort)
+    private readonly int _sftpPort; 
+    private readonly string _s3Path; // S3 path on the SFTP server (e.g., /s3-msaml-p01)
+
+    public DownloadFileJob(string username, string password, string proxyUsername, string proxyPassword, string proxyHost, int proxyPort, string sftpHost, string sftpUsername, string sftpPassword, int sftpPort, string s3Path)
     {
         _username = username;
         _password = password;
@@ -95,6 +99,8 @@ public class DownloadFileJob : IJob
         _sftpUsername = sftpUsername;
         _sftpPassword = sftpPassword;
         _sftpPort = sftpPort;
+        _s3Path = s3Path; // The path to upload files to, e.g., /s3-msaml-p01
+
     }
     public async Task Execute(IJobExecutionContext context)
     {
@@ -157,18 +163,42 @@ public class DownloadFileJob : IJob
     {
         try
         {
+            // Use PEM file for SSH authentication
+            string pemf = "amluser.pem";
+            string pmfilePath = Path.Combine("pem/", pemf);
+            // Ensure that the PEM file exists
+            if (!File.Exists(pmfilePath))
+            {
+                Console.WriteLine("Error: PEM file does not exist.");
+                return;
+            }
+
+            var privateKeyFile = new PrivateKeyFile(pmfilePath); // Path to PEM file
+
+            // SSH connection info
+            var connectionInfo = new ConnectionInfo(
+                _sftpHost,
+                _sftpUsername,
+                new AuthenticationMethod[]
+                {
+                    new PrivateKeyAuthenticationMethod(_sftpUsername, privateKeyFile)
+                }
+            );
+
             // Establish an SFTP connection
-            using (var sftpClient = new SftpClient(_sftpHost, _sftpPort, _sftpUsername, _sftpPassword))
+            using (var sftpClient = new SftpClient(connectionInfo))
             {
                 sftpClient.Connect();
                 Console.WriteLine("Connected to SFTP server");
 
+                string remoteFilePath = _s3Path + "/" + Path.GetFileName(filePath);
+                Console.WriteLine($"Uploading to remote path: {remoteFilePath}");
+
                 // Upload the file to the SFTP server
                 using (var fileStream = new FileStream(filePath, FileMode.Open))
-                {
-                    string remoteFileName = Path.GetFileName(filePath);
-                    await Task.Run(() => sftpClient.UploadFile(fileStream, remoteFileName));
-                    Console.WriteLine($"File uploaded successfully to SFTP: {remoteFileName}");
+                {   
+                    await Task.Run(() => sftpClient.UploadFile(fileStream, remoteFilePath));
+                    Console.WriteLine($"File uploaded successfully to SFTP: {remoteFilePath}");
                 }
 
                 sftpClient.Disconnect();
