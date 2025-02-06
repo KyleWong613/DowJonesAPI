@@ -108,14 +108,12 @@ public class DownloadFileJob : IJob
         string baseUrl = "https://djrcfeed.dowjones.com/csv/";         // Set the base URL and construct the dynamic filename
         //string currentDate = DateTime.Now.ToString("yyyyMMdd");  // Get current date in yyyymmdd format
         string currentDate = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");  // Get current date in yyyymmdd format
-        string fileName = $"csv_pfa_{currentDate}2200_d.zip";  // Construct the filename
+        string fileName = $"csv_pfa_{currentDate}2200_d.zip";
         string url = baseUrl + fileName;  // Full URL
         string downloadDirectory = "downloads";
         string filePath = Path.Combine(downloadDirectory, fileName);
 
-        string username = _username;
-        string password = _password;
-        string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
+        string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_username}:{_password}"));
 
         //// Create an HttpClientHandler with proxy settings
         //var proxy = new WebProxy(_proxyHost, _proxyPort)
