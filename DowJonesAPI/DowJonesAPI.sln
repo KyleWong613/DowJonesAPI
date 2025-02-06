@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DowJonesAPI", "DowJonesAPI\DowJonesAPI.csproj", "{BBA2D2A0-1CEA-461D-9935-1567D5D82B29}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBA2D2A0-1CEA-461D-9935-1567D5D82B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA2D2A0-1CEA-461D-9935-1567D5D82B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA2D2A0-1CEA-461D-9935-1567D5D82B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA2D2A0-1CEA-461D-9935-1567D5D82B29}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3249074A-186A-42D7-8412-75D57F9BB826}
+	EndGlobalSection
+EndGlobal
