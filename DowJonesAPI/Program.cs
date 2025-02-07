@@ -39,7 +39,7 @@ class Program
         string s3Path = configuration["SFTP:PEMFilePath"];
 
 
-        // Instantiate and run the job immediately for test
+        // Instantiate and run the job immediately
         var downloadFileJob = new DownloadFileJob(username, password, proxyUsername, proxyPassword, proxyHost, proxyPort, sftpHost, sftpUsername, sftpPassword, sftpPort, s3Path);
         await downloadFileJob.Execute(null);  // Pass null for the job context (not needed for this case)
 
@@ -107,7 +107,7 @@ public class DownloadFileJob : IJob
         // Set the URL for the CSV file to download
         string baseUrl = "https://djrcfeed.dowjones.com/csv/";         // Set the base URL and construct the dynamic filename
         //string currentDate = DateTime.Now.ToString("yyyyMMdd");  // Get current date in yyyymmdd format
-        string currentDate = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");  // Get current date in yyyymmdd format
+        string currentDate = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");  // Get current date -1 day in yyyymmdd format
         string fileName = $"csv_pfa_{currentDate}2200_d.zip";
         string url = baseUrl + fileName;  // Full URL
         string downloadDirectory = "downloads";
@@ -149,7 +149,6 @@ public class DownloadFileJob : IJob
                 Console.WriteLine($"File downloaded successfully: {filePath}");
 
                 await UploadFileToSFTP(filePath);
-
             }
             catch (Exception ex)
             {

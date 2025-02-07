@@ -31,3 +31,6 @@
 /DowJonesAPI/DowJonesAPI/obj
 /DowJonesAPI/obj
 /DowJonesAPI/bin/Debug/net6.0
+/DowJonesAPI/bin/Release/net6.0
+/DowJonesAPI/Properties/PublishProfiles/FolderProfile.pubxml
+/DowJonesAPI/Properties/PublishProfiles/FolderProfile.pubxml.user
