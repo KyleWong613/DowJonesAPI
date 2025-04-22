@@ -38,11 +38,9 @@ class Program
         int sftpPort = int.Parse(configuration["SFTP:Port"]);
         string s3Path = configuration["SFTP:PEMFilePath"];
 
-
         // Instantiate and run the job immediately
         var downloadFileJob = new DownloadFileJob(username, password, proxyUsername, proxyPassword, proxyHost, proxyPort, sftpHost, sftpUsername, sftpPassword, sftpPort, s3Path);
         await downloadFileJob.Execute(null);  // Pass null for the job context (not needed for this case)
-
 
         // Initialize Quartz.NET scheduler
         //var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
@@ -115,19 +113,6 @@ public class DownloadFileJob : IJob
 
         string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_username}:{_password}"));
 
-        //// Create an HttpClientHandler with proxy settings
-        //var proxy = new WebProxy(_proxyHost, _proxyPort)
-        //{
-        //    Credentials = new NetworkCredential(_proxyUsername, _proxyPassword)
-        //}; 
-
-        //HttpClientHandler handler = new HttpClientHandler()
-        //{
-        //    Proxy = proxy,
-        //    UseProxy = true,
-        //    PreAuthenticate = true // Ensure pre-authentication
-        //};
-
         // Use HttpClient to download the file
         //using (var client = new HttpClient(handler))
         using (var client = new HttpClient())
@@ -138,17 +123,33 @@ public class DownloadFileJob : IJob
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", credentials);
                 Console.WriteLine($"url: {url}");
 
-                // Download the file asynchronously
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode(); // Throw an exception if the status code is not successful
 
-                // Read the file content and save it
-                byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
-                await File.WriteAllBytesAsync(filePath, fileBytes);
+                var proxy = new WebProxy(_proxyHost, _proxyPort)
+                {
+                    Credentials = new NetworkCredential(_proxyUsername, _proxyPassword)
+                };
+                Console.WriteLine($"Using proxy: {_proxyHost}:{_proxyPort} with credentials: {_proxyUsername}");
 
-                Console.WriteLine($"File downloaded successfully: {filePath}");
+                HttpClientHandler handler = new HttpClientHandler()
+                {
+                    Proxy = proxy,
+                    UseProxy = true,
+                    PreAuthenticate = true // Ensure pre-authentication
+                };
+                using (var proxyClient = new HttpClient(handler))
+                {
+                    // Download the file asynchronously
+                    var response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode(); // Throw an exception if the status code is not successful
 
-                await UploadFileToSFTP(filePath);
+                    // Read the file content and save it
+                    byte[] fileBytes = await response.Content.ReadAsByteArrayAsync();
+                    await File.WriteAllBytesAsync(filePath, fileBytes);
+
+                    Console.WriteLine($"File downloaded successfully: {filePath}");
+
+                    await UploadFileToSFTP(filePath);
+                }
             }
             catch (Exception ex)
             {
